@@ -9,11 +9,12 @@ export const Plane = () => {
     position: [0, -0.25, 0],
     material: {
       friction: 0.1
-    }
+    },
+    collisionFilterGroup:11
   }));
 
   return (
-    <mesh ref={ref} receiveShadow={true} scale={[10,10,10]}>
+    <mesh ref={ref} receiveShadow={true} scale={[30,30]}>
       <planeBufferGeometry />
       <meshPhongMaterial color={"skyblue"} receiveShadow />
     </mesh>

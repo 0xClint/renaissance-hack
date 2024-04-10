@@ -5,6 +5,7 @@
   "dependencies": {
     "@huddle01/react": "^2.0.8",
     "@huddle01/server-sdk": "^2.2.2",
+    "@huddle01/web-core": "^2.0.8",
     "@react-three/cannon": "0.5.3",
     "@react-three/drei": "2.2.1",
     "@testing-library/jest-dom": "^5.14.1",
@@ -17,7 +18,8 @@
     "react-three-fiber": "5.3.10",
     "styled-components": "^6.1.8",
     "three": "0.123.0",
-    "web-vitals": "^2.1.0"
+    "web-vitals": "^2.1.0",
+    "zustand": "3.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -42,5 +44,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
   }
 }

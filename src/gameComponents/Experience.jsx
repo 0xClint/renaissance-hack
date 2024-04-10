@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { extend, useThree } from "react-three-fiber";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 import { Physics } from "@react-three/cannon";
@@ -6,17 +6,15 @@ import { Cube } from "./Cube";
 import { Plane } from "./Plane";
 import { Player } from "./Player";
 import Map from "./Map";
+import { TempPlayer } from "./TempPlayer";
+import Sphere from "./Sphere";
+import { Cubes } from "./Cubes";
 
 extend({ PointerLockControls });
 
-const Experience = () => {
+const Experience = ({ id, peerIds }) => {
   const { camera, gl } = useThree();
   const controls = useRef();
-
-  useEffect(() => {
-    camera.layers.enable(0);
-    camera.layers.enable(1);
-  }, [camera]);
 
   useEffect(() => {
     const handleFocus = () => {
@@ -28,6 +26,16 @@ const Experience = () => {
       document.removeEventListener("click", handleFocus);
     };
   }, [gl]);
+
+  useEffect(() => {
+    camera.layers.enable(0);
+    camera.layers.enable(1);
+  }, [camera]);
+
+  const [cursorPosition, setCursorPosition] = useState({
+    top: 0,
+    left: 0,
+  });
 
   return (
     <>
@@ -47,13 +55,20 @@ const Experience = () => {
         broadphase={"SAP"}
       >
         {/** Player */}
-        <Player />
-        <Map />
-        <Plane />
+        <TempPlayer />
+        {peerIds?.map((peerId) => (
+          <Player key={peerId} peerId={peerId} />
+        ))}
+        {/* <Player /> */}
 
         {/** Cubes */}
-        <Cube position={[0, 0, -5]} layers={1} />
-        <Cube position={[-0.6, 0, -5]} />
+        <Cubes />
+        {/* <Cube position={[0, 0, -5]} layers={1} />
+        <Cube position={[-0.6, 0, -5]} /> */}
+        <Sphere position={[2, 1, 1]} layers={1} />
+        <Plane />
+        <gridHelper />
+        <axesHelper />
       </Physics>
     </>
   );

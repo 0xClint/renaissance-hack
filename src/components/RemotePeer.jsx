@@ -2,8 +2,9 @@ import {
   useRemoteVideo,
   useRemoteAudio,
   usePeerIds,
+  useDataMessage,
 } from "@huddle01/react/hooks";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const RemotePeer = (props) => {
   console.log("RemotePeer Page", props.peerId);
@@ -11,7 +12,22 @@ const RemotePeer = (props) => {
   const { stream: audioStream } = useRemoteAudio({ peerId: props.peerId });
   const vidRef = useRef(null);
   const audioRef = useRef(null);
-  console.log(stream)
+
+  const [cursorPosition, setCursorPosition] = useState({
+    top: 0,
+    left: 0,
+  });
+
+  useDataMessage({
+    onMessage(payload, from, label) {
+      if (label === "pos" && from === props.peerId) {
+        console.log(payload)
+        // const { horizontal, vertical ,cameraDirection} = JSON.parse(payload);
+        // console.log(horizontal);
+      }
+    },
+  });
+  // console.log(cursorPosition);
 
   useEffect(() => {
     if (stream && vidRef.current && state === "playable") {

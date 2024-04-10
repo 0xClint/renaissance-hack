@@ -6,7 +6,8 @@ export const Bullet = (props) => {
   const [sphereRef] = useSphere(() => ({
     mass: 5,
     args: 0.1,
-    ...props
+    ...props,
+    collisionFilterGroup: 1,
   }));
 
   return (
