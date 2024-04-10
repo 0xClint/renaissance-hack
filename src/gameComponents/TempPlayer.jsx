@@ -170,10 +170,7 @@ export const TempPlayer = () => {
   });
   return (
     <>
-      <mesh ref={sphereRef}>
-        <boxBufferGeometry args={[0.5, 0.5, 0.5]} />
-        <meshLambertMaterial color={"red"} />
-      </mesh>
+    
       {/** Renders bullets */}
       {bullets.map((bullet) => {
         return (

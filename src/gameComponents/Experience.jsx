@@ -55,10 +55,10 @@ const Experience = ({ id, peerIds }) => {
         broadphase={"SAP"}
       >
         {/** Player */}
-        <TempPlayer />
         {peerIds?.map((peerId) => (
           <Player key={peerId} peerId={peerId} />
         ))}
+        <TempPlayer />
         {/* <Player /> */}
 
         {/** Cubes */}

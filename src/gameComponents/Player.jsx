@@ -7,6 +7,7 @@ import { useMouseInput } from "../hooks/useMouseInput";
 import { useVariable } from "../hooks/useVariable";
 import { Bullet } from "./Bullet";
 import { Raycaster } from "three";
+import { huddleClient } from "..";
 
 /** Player movement constants */
 const speed = 300;
@@ -15,8 +16,22 @@ const bulletCoolDown = 300;
 const jumpSpeed = 5;
 const jumpCoolDown = 400;
 
-export const Player = () => {
+export const Player = ({ peerId }) => {
+  const [data, setData] = useState({
+    horizontal: 0,
+    vertical: 0,
+    cameraDirection: 0,
+  });
   /** Player collider */
+
+  huddleClient.localPeer.on("receive-data", ({ payload, from, label }) => {
+    if (label === "pos" && from === peerId) {
+      const { horizontal, vertical, cameraDirection } = JSON.parse(payload);
+      console.log(horizontal, vertical, cameraDirection);
+      setData({ horizontal, vertical, cameraDirection });
+    }
+  });
+
   const [sphereRef, api] = useSphere(() => ({
     mass: 100,
     fixedRotation: true,
@@ -59,7 +74,9 @@ export const Player = () => {
     const space = input.current[" "];
 
     let velocity = new Vector3(0, 0, 0);
-    let cameraDirection = new Vector3();
+
+    const { x, y, z } = data.cameraDirection;
+    let cameraDirection = new Vector3(x, y, z);
     camera.getWorldDirection(cameraDirection);
 
     let forward = new Vector3();
@@ -69,20 +86,20 @@ export const Player = () => {
     let right = new Vector3();
     right.setFromMatrixColumn(camera.matrix, 0);
 
-    let [horizontal, vertical] = [0, 0];
+    let [horizontal, vertical] = [data.horizontal, data.vertical];
 
-    if (w) {
-      vertical += 1;
-    }
-    if (s) {
-      vertical -= 1;
-    }
-    if (d) {
-      horizontal += 1;
-    }
-    if (a) {
-      horizontal -= 1;
-    }
+    // if (w) {
+    //   vertical += 1;
+    // }
+    // if (s) {
+    //   vertical -= 1;
+    // }
+    // if (d) {
+    //   horizontal += 1;
+    // }
+    // if (a) {
+    //   horizontal -= 1;
+    // }
 
     if (horizontal !== 0 && vertical !== 0) {
       velocity
@@ -133,7 +150,9 @@ export const Player = () => {
     }
 
     /** Handles shooting */
-    const bulletDirection = cameraDirection.clone().multiplyScalar(bulletSpeed);
+    const bulletDirection = cameraDirection
+      .clone()
+      .multiplyScalar(bulletSpeed);
     const bulletPosition = camera.position
       .clone()
       .add(cameraDirection.clone().multiplyScalar(2));
@@ -156,6 +175,10 @@ export const Player = () => {
 
   return (
     <>
+      <mesh ref={sphereRef}>
+        <boxBufferGeometry args={[0.5, 0.5, 0.5]} />
+        <meshLambertMaterial color={"red"} />
+      </mesh>
       {/** Renders bullets */}
       {bullets.map((bullet) => {
         return (

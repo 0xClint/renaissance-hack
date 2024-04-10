@@ -5,6 +5,7 @@ import {
   useDataMessage,
 } from "@huddle01/react/hooks";
 import React, { useEffect, useRef, useState } from "react";
+import { huddleClient } from "..";
 
 const RemotePeer = (props) => {
   console.log("RemotePeer Page", props.peerId);
@@ -18,14 +19,20 @@ const RemotePeer = (props) => {
     left: 0,
   });
 
-  useDataMessage({
-    onMessage(payload, from, label) {
-      if (label === "pos" && from === props.peerId) {
-        console.log(payload)
-        // const { horizontal, vertical ,cameraDirection} = JSON.parse(payload);
-        // console.log(horizontal);
-      }
-    },
+  // useDataMessage({
+  //   onMessage(payload, from, label) {
+  //     if (label === "pos" && from === props.peerId) {
+  //       console.log(payload)
+  //       // const { horizontal, vertical ,cameraDirection} = JSON.parse(payload);
+  //       // console.log(horizontal);
+  //     }
+  //   },
+  // });
+  huddleClient.localPeer.on("receive-data", ({ payload, from, label }) => {
+    if (label === "pos" && from === props.peerId) {
+      const { horizontal, vertical, cameraDirection } = JSON.parse(payload);
+      console.log(horizontal, vertical);
+    }
   });
   // console.log(cursorPosition);
 
