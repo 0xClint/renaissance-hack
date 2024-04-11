@@ -1,7 +1,8 @@
 import { useGLTF } from "@react-three/drei";
+import { RigidBody } from "@react-three/rapier";
 import { useEffect } from "react";
 
-const Map = () => {
+export const Map = () => {
   const map = useGLTF("models/map.glb");
   useEffect(() => {
     map.scene.traverse((child) => {
@@ -13,12 +14,10 @@ const Map = () => {
   });
   return (
     <>
-      {/* <RigidBody colliders="trimesh" type="fixed"> */}
+      <RigidBody colliders="trimesh" type="fixed">
         <primitive object={map.scene} />
-      {/* </RigidBody> */}
+      </RigidBody>
     </>
   );
 };
-useGLTF.preload("models/map2.glb");
-
-export default Map;
+useGLTF.preload("models/map.glb");

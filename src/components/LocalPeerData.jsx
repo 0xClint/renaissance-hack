@@ -8,7 +8,7 @@ import {
 } from "@huddle01/react/hooks";
 
 const LocalPeerData = () => {
-  const [displayName] = useStore((state) => [state.displayName]);
+  // const [displayName] = useStore((state) => [state.displayName]);
   const [isCursorSharing, setCursorSharing] = useState(false);
 
   const { stream, enableVideo, disableVideo, isVideoOn } = useLocalVideo();
@@ -22,7 +22,7 @@ const LocalPeerData = () => {
   const { sendData } = useDataMessage();
 
   const { metadata, updateMetadata } = useLocalPeer({
-    displayName,
+    displayName: "harry",
     avatarUrl: "#",
   });
 
@@ -55,7 +55,6 @@ const LocalPeerData = () => {
   //     document.removeEventListener("mousemove", onMouseMove);
   //   };
   // }, [isCursorSharing]);
-
 
   return (
     <div>

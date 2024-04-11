@@ -1,194 +1,153 @@
-import { useSphere } from "@react-three/cannon";
+import { useKeyboardControls } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { RigidBody, useRapier } from "@react-three/rapier";
 import React, { useEffect, useRef, useState } from "react";
-import { useFrame, useThree } from "react-three-fiber";
-import { Vector3 } from "three";
-import { useKeyboardInput } from "../hooks/useKeyboardInput";
-import { useMouseInput } from "../hooks/useMouseInput";
-import { useVariable } from "../hooks/useVariable";
-import { Bullet } from "./Bullet";
-import { Raycaster } from "three";
-import { huddleClient } from "..";
+import * as THREE from "three";
+import useStore from "../hooks/useStore";
 
-/** Player movement constants */
-const speed = 300;
-const bulletSpeed = 30;
-const bulletCoolDown = 300;
-const jumpSpeed = 5;
-const jumpCoolDown = 400;
+const Player = () => {
+  console.log("fhjk");
 
-export const Player = ({ peerId }) => {
-  const [data, setData] = useState({
-    horizontal: 0,
-    vertical: 0,
-    cameraDirection: 0,
-  });
-  /** Player collider */
+  const body = useRef(null);
+  const [subscribeKeys, getKeys] = useKeyboardControls();
+  const { rapier, world } = useRapier();
+  const rapierWorld = world.raw();
+  const [smoothedCameraPosition] = useState(
+    () => new THREE.Vector3(10, 10, 10)
+  );
+  const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
-  huddleClient.localPeer.on("receive-data", ({ payload, from, label }) => {
-    if (label === "pos" && from === peerId) {
-      const { horizontal, vertical, cameraDirection } = JSON.parse(payload);
-      console.log(horizontal, vertical, cameraDirection);
-      setData({ horizontal, vertical, cameraDirection });
+  const start = useStore((state) => state.start);
+  const end = useStore((state) => state.end);
+  const restart = useStore((state) => state.restart);
+  const blocksCount = useStore((state) => state.blocksCount);
+
+  const jump = () => {
+    const origin = body.current.translation();
+    origin.y -= 0.31;
+    const direction = { x: 0, y: -1, z: 0 };
+    const ray = new rapier.Ray(origin, direction);
+    const hit = rapierWorld.castRay(ray, 10, true);
+
+    if (hit && hit.toi < 0.15) {
+      body.current.applyImpulse({ x: 0, y: 0.5, z: 0 });
     }
-  });
+  };
 
-  const [sphereRef, api] = useSphere(() => ({
-    mass: 100,
-    fixedRotation: true,
-    position: [0, 1, 0],
-    args: 0.2,
-    material: {
-      friction: 0,
-    },
-  }));
-  /** Bullets */
-  const [bullets, setBullets] = useState([]);
-
-  /** Input hooks */
-  const pressed = useKeyboardInput(["w", "a", "s", "d", " "]);
-  const pressedMouse = useMouseInput();
-
-  /** Converts the input state to ref so they can be used inside useFrame */
-  const input = useVariable(pressed);
-  const mouseInput = useVariable(pressedMouse);
-
-  /** Player movement constants */
-  const { camera, scene } = useThree();
-
-  /** Player state */
-  const state = useRef({
-    timeToShoot: 0,
-    timeTojump: 0,
-    vel: [0, 0, 0],
-    jumping: false,
-  });
+  const reset = () => {
+    body.current.setTranslation({ x: 0, y: 1, z: 0 });
+    body.current.setLinvel({ x: 0, y: 0, z: 0 });
+    body.current.setAngvel({ x: 0, y: 0, z: 0 });
+  };
 
   useEffect(() => {
-    api.velocity.subscribe((v) => (state.current.vel = v));
-  }, [api]);
-
-  /** Player loop */
-  useFrame((_, delta) => {
-    /** Handles movement */
-    const { w, s, a, d } = input.current;
-    const space = input.current[" "];
-
-    let velocity = new Vector3(0, 0, 0);
-
-    const { x, y, z } = data.cameraDirection;
-    let cameraDirection = new Vector3(x, y, z);
-    camera.getWorldDirection(cameraDirection);
-
-    let forward = new Vector3();
-    forward.setFromMatrixColumn(camera.matrix, 0);
-    forward.crossVectors(camera.up, forward);
-
-    let right = new Vector3();
-    right.setFromMatrixColumn(camera.matrix, 0);
-
-    let [horizontal, vertical] = [data.horizontal, data.vertical];
-
-    // if (w) {
-    //   vertical += 1;
-    // }
-    // if (s) {
-    //   vertical -= 1;
-    // }
-    // if (d) {
-    //   horizontal += 1;
-    // }
-    // if (a) {
-    //   horizontal -= 1;
-    // }
-
-    if (horizontal !== 0 && vertical !== 0) {
-      velocity
-        .add(forward.clone().multiplyScalar(speed * vertical))
-        .add(right.clone().multiplyScalar(speed * horizontal));
-      velocity.clampLength(-speed, speed);
-    } else if (horizontal !== 0) {
-      velocity.add(right.clone().multiplyScalar(speed * horizontal));
-    } else if (vertical !== 0) {
-      velocity.add(forward.clone().multiplyScalar(speed * vertical));
-    }
-
-    /** Updates player velocity */
-    api.velocity.set(
-      velocity.x * delta,
-      state.current.vel[1],
-      velocity.z * delta
-    );
-    /** Updates camera position */
-    camera.position.set(
-      sphereRef.current.position.x,
-      sphereRef.current.position.y + 1,
-      sphereRef.current.position.z
+    const unsubscribeReset = useStore.subscribe(
+      (state) => state.phase,
+      (value) => {
+        if (value === "ready") reset();
+      }
     );
 
-    /** Handles jumping */
-    if (state.current.jumping && state.current.vel[1] < 0) {
-      /** Ground check */
-      const raycaster = new Raycaster(
-        sphereRef.current.position,
-        new Vector3(0, -1, 0),
-        0,
-        0.2
-      );
-      const intersects = raycaster.intersectObjects(scene.children);
-      if (intersects.length !== 0) {
-        state.current.jumping = false;
+    const unsubscribeJump = subscribeKeys(
+      (state) => state.jump,
+      (value) => {
+        if (value) jump();
       }
+    );
+
+    const unsubscribeAny = subscribeKeys(() => {
+      start();
+    });
+
+    return () => {
+      unsubscribeReset();
+      unsubscribeJump();
+      unsubscribeAny();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useFrame((state, delta) => {
+    /**
+     * Controls
+     */
+    const { forward, backward, leftward, rightward, jump } = getKeys();
+
+    const impulse = { x: 0, y: 0, z: 0 };
+    const torque = { x: 0, y: 0, z: 0 };
+
+    const impulseStrength = 0.6 * delta;
+    const torqueStrength = 0.2 * delta;
+
+    if (forward) {
+      impulse.z -= impulseStrength;
+      torque.x -= torqueStrength;
     }
 
-    if (space && !state.current.jumping) {
-      const now = Date.now();
-      if (now > state.current.timeTojump) {
-        state.current.timeTojump = now + jumpCoolDown;
-        state.current.jumping = true;
-        api.velocity.set(state.current.vel[0], jumpSpeed, state.current.vel[2]);
-      }
+    if (rightward) {
+      impulse.x += impulseStrength;
+      torque.z -= torqueStrength;
     }
 
-    /** Handles shooting */
-    const bulletDirection = cameraDirection
-      .clone()
-      .multiplyScalar(bulletSpeed);
-    const bulletPosition = camera.position
-      .clone()
-      .add(cameraDirection.clone().multiplyScalar(2));
-
-    if (mouseInput.current.left) {
-      const now = Date.now();
-      if (now >= state.current.timeToShoot) {
-        state.current.timeToShoot = now + bulletCoolDown;
-        setBullets((bullets) => [
-          ...bullets,
-          {
-            id: now,
-            position: [bulletPosition.x, bulletPosition.y, bulletPosition.z],
-            forward: [bulletDirection.x, bulletDirection.y, bulletDirection.z],
-          },
-        ]);
-      }
+    if (backward) {
+      impulse.z += impulseStrength;
+      torque.x += torqueStrength;
     }
+
+    if (leftward) {
+      impulse.x -= impulseStrength;
+      torque.z += torqueStrength;
+    }
+
+    body.current.applyImpulse(impulse);
+    body.current.applyTorqueImpulse(torque);
+
+    /**
+     * Camera
+     */
+    const bodyPosition = body.current.translation();
+
+    const cameraPosition = new THREE.Vector3();
+    cameraPosition.copy(bodyPosition);
+    cameraPosition.z += 2.25;
+    cameraPosition.y += 0.65;
+
+    const cameraTarget = new THREE.Vector3();
+    cameraTarget.copy(bodyPosition);
+    cameraTarget.y += 0.25;
+
+    smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
+    smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
+
+    state.camera.position.copy(smoothedCameraPosition);
+    state.camera.lookAt(smoothedCameraTarget);
+
+    /**
+     * Phases
+     */
+    if (bodyPosition.z < -(blocksCount * 4 + 2)) end();
+
+    if (bodyPosition.y < -4) restart();
   });
 
   return (
     <>
-      <mesh ref={sphereRef}>
-        <boxBufferGeometry args={[0.5, 0.5, 0.5]} />
-        <meshLambertMaterial color={"red"} />
-      </mesh>
-      {/** Renders bullets */}
-      {bullets.map((bullet) => {
-        return (
-          <Bullet
-            key={bullet.id}
-            velocity={bullet.forward}
-            position={bullet.position}
-          />
-        );
-      })}
+      <RigidBody
+        ref={body}
+        colliders="ball"
+        restitution={0.2}
+        friction={1}
+        linearDamping={0.5}
+        angularDamping={0.5}
+        position={[0, 1, 0]}
+      >
+        <mesh castShadow>
+          <icosahedronGeometry args={[0.3, 1]} />
+          <meshStandardMaterial flatShading color="mediumpurple" />
+        </mesh>
+      </RigidBody>
     </>
   );
 };
+
+export default Player;

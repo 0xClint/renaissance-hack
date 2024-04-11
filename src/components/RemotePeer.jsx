@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { huddleClient } from "..";
 
 const RemotePeer = (props) => {
-  console.log("RemotePeer Page", props.peerId);
+  // console.log("RemotePeer Page", props.peerId);
   const { stream, state } = useRemoteVideo({ peerId: props.peerId });
   const { stream: audioStream } = useRemoteAudio({ peerId: props.peerId });
   const vidRef = useRef(null);
@@ -19,21 +19,22 @@ const RemotePeer = (props) => {
     left: 0,
   });
 
-  // useDataMessage({
-  //   onMessage(payload, from, label) {
-  //     if (label === "pos" && from === props.peerId) {
-  //       console.log(payload)
-  //       // const { horizontal, vertical ,cameraDirection} = JSON.parse(payload);
-  //       // console.log(horizontal);
-  //     }
-  //   },
-  // });
-  huddleClient.localPeer.on("receive-data", ({ payload, from, label }) => {
-    if (label === "pos" && from === props.peerId) {
-      const { horizontal, vertical, cameraDirection } = JSON.parse(payload);
-      console.log(horizontal, vertical);
-    }
+  useDataMessage({
+    onMessage(payload, from, label) {
+      if (label === "pos") {
+        // if (label === "pos" && from === props.peerId) {
+        console.log(payload, from);
+        // const { forward, backward, leftward, rightward } = JSON.parse(payload);
+        // console.log(forward, backward, leftward, rightward);
+      }
+    },
   });
+  // huddleClient.localPeer.on("receive-data", ({ payload, from, label }) => {
+  //   if (label === "pos" && from === props.peerId) {
+  //     const { forward, backward, leftward, rightward } = JSON.parse(payload);
+  //     console.log(forward, backward, leftward, rightward);
+  //   }
+  // });
   // console.log(cursorPosition);
 
   useEffect(() => {

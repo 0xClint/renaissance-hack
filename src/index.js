@@ -5,7 +5,7 @@ import App from "./App";
 import { HuddleProvider, HuddleClient } from "@huddle01/react";
 
 export const huddleClient = new HuddleClient({
-  projectId: "WDRdP3WkZSamuUW7zzcfBZw-EBSzdwsJ",
+  projectId: process.env.REACT_APP_PROJECT_ID,
   options: {
     activeSpeakers: {
       size: 8,
@@ -13,8 +13,6 @@ export const huddleClient = new HuddleClient({
   },
 });
 
-// projectId = WDRdP3WkZSamuUW7zzcfBZw-EBSzdwsJ
-// api-key = qX58fmJMe7G498Xb3tQ2Ifxt-wjiYouK
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <HuddleProvider client={huddleClient}>

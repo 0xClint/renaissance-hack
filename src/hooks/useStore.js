@@ -1,26 +1,51 @@
 import create from "zustand";
-import { cubesPos } from "../libs/preData";
+import { subscribeWithSelector } from "zustand/middleware";
 
-export const useStore = create((set) => ({
-  postData: {
-    horizontal: "",
-    vertical: "",
-    cameraDirection: { x: 0, y: 0, z: 0 },
-  },
-  setPostData: (horizontal, vertical, cameraDirection) => {
-    set(() => ({ postData: { horizontal, vertical, cameraDirection } }));
-  },
-  peerData: {
-    horizontal: "",
-    vertical: "",
-    cameraDirection: { x: 0, y: 0, z: 0 },
-  },
-  setPeerData: (horizontal, vertical, cameraDirection) => {
-    set(() => ({ postData: { horizontal, vertical, cameraDirection } }));
-  },
-  displayName: "Harry",
-  setDisplayName: (name) => {
-    set(() => ({ displayName: name }));
-  },
-  cubes: [...cubesPos] || [],
-}));
+export default create(
+  subscribeWithSelector((set) => {
+    const initialState = {
+      blocksCount: 10,
+      blocksSeed: 0,
+      startTime: 0,
+      endTime: 0,
+      phase: "ready",
+    };
+
+    return {
+      ...initialState,
+      userName: "Bob",
+      setUserName: (name) => {
+        set(() => ({ userName: name }));
+      },
+      start: () => {
+        set((state) => {
+          if (state.phase === "ready") {
+            return { phase: "playing", startTime: Date.now() };
+          }
+
+          return {};
+        });
+      },
+
+      restart: () => {
+        set((state) => {
+          if (state.phase === "playing" || state.phase === "ended") {
+            return { phase: "ready", blocksSeed: Math.random() };
+          }
+
+          return {};
+        });
+      },
+
+      end: () => {
+        set((state) => {
+          if (state.phase === "playing") {
+            return { phase: "ended", endTime: Date.now() };
+          }
+
+          return {};
+        });
+      },
+    };
+  })
+);
