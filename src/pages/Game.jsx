@@ -32,44 +32,49 @@ const Game = () => {
   }, [id]);
   return (
     <div style={{ height: "100vh" }}>
-      <div>
-        <img src={bgIcon} className="absolute -z-10  w-[100vw]" />
-        <div className=" ">
-          <div className="control setting menu absolute h-screen w-screen make-flex">
-            <div className="control z-10 setting menu absolute top-[500px]]">
-              <div
-                className="absolute right-1 justify-end px-2 pt-2 cursor-pointer"
-                // onClick={() => setControlMenu(false)}
-              >
-                <span className=" font-bold">X</span>
-              </div>
-              <div className=" z-100 menu-container w-[500px]  py-8 card-container make-flex flex-col  ">
-                <h3 className="text-lg font-bold">Waiting for your friend to join...</h3>
-
-                <Lottie
-                  loop
-                  animationData={loaderGif}
-                  play
-                  style={{
-                    width: 150,
-                    height: 150,
-                  }}
-                />
-
-                <p
-                  onClick={() => {
-                    navigator.clipboard.writeText(currentUrl);
-                  }}
-                  className="text-blue-800 font-semibold underline cursor-pointer"
+      {/* {!peerIds.length && (
+        <div>
+          <img src={bgIcon} className="absolute -z-10  w-[100vw]" />
+          <div className=" ">
+            <div className="control setting menu absolute h-screen w-screen make-flex">
+              <div className="control z-10 setting menu absolute top-[500px]]">
+                <div
+                  className="absolute right-1 justify-end px-2 pt-2 cursor-pointer"
+                  // onClick={() => setControlMenu(false)}
                 >
-                  click to copy invite link
-                </p>
+                  <span className=" font-bold">X</span>
+                </div>
+                <div className=" z-100 menu-container w-[500px]  py-8 card-container make-flex flex-col  ">
+                  <h3 className="text-lg font-bold">
+                    Waiting for your friend to Join...
+                  </h3>
+
+                  <Lottie
+                    loop
+                    animationData={loaderGif}
+                    play
+                    style={{
+                      width: 150,
+                      height: 150,
+                    }}
+                  />
+
+                  <p
+                    onClick={() => {
+                      navigator.clipboard.writeText(currentUrl);
+                    }}
+                    className="text-blue-800 font-semibold underline cursor-pointer"
+                  >
+                    click to copy invite link
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {peerIds.length && (
+      )} */}
+
+      {/* {peerIds.length && ( */}
         <KeyboardControls
           map={[
             { name: "forward", keys: ["ArrowUp", "KeyW"] },
@@ -83,9 +88,9 @@ const Game = () => {
             <axesHelper />
             <Experience />
           </Canvas>
-          <Interface />
+          {/* <Interface /> */}
         </KeyboardControls>
-      )}
+      {/* )} */}
     </div>
   );
 };

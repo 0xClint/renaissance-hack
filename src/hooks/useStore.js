@@ -13,10 +13,10 @@ export default create(
 
     return {
       ...initialState,
-      userName: "Bob",
-      setUserName: (name) => {
-        set(() => ({ userName: name }));
-      },
+      // userName: "Bob",
+      // setUserName: (name) => {
+      //   set(() => ({ userName: name }));
+      // },
       start: () => {
         set((state) => {
           if (state.phase === "ready") {

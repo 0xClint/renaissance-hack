@@ -19,10 +19,10 @@ const Experience = () => {
         <color args={["#252731"]} attach="background" />
         <Light />
         <Base count={blocksCount} />
-        {peerIds.map((remotePeerId) => (
+        {/* {peerIds.map((remotePeerId) => (
           <PeerPlayer key={remotePeerId} remotePeerId={remotePeerId} />
-        ))}
-        <PeerPlayer key={peerId} remotePeerId={peerId} />
+        ))} */}
+        {/* <PeerPlayer key={peerId} remotePeerId={peerId} /> */}
         {/* <Player /> */}
       </Physics>
 

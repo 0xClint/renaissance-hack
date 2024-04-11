@@ -63,22 +63,22 @@ const PeerPlayer = ({ remotePeerId }) => {
   };
 
   useEffect(() => {
-    // const unsubscribeReset = useStore.subscribe(
-    //   (state) => state.phase,
-    //   (value) => {
-    //     if (value === "ready") reset();
-    //   }
-    // );
+    const unsubscribeReset = useStore.subscribe(
+      (state) => state.phase,
+      (value) => {
+        if (value === "ready") reset();
+      }
+    );
 
-    // const unsubscribeAny = subscribeKeys(() => {
-    //   start();
-    // });
+    const unsubscribeAny = subscribeKeys(() => {
+      start();
+    });
 
     if (peerJump) jump();
 
     return () => {
-      // unsubscribeReset();
-      // unsubscribeAny();
+      unsubscribeReset();
+      unsubscribeAny();
     };
   }, [peerJump]);
 
