@@ -14,29 +14,6 @@ const RemotePeer = (props) => {
   const vidRef = useRef(null);
   const audioRef = useRef(null);
 
-  const [cursorPosition, setCursorPosition] = useState({
-    top: 0,
-    left: 0,
-  });
-
-  useDataMessage({
-    onMessage(payload, from, label) {
-      if (label === "pos") {
-        // if (label === "pos" && from === props.peerId) {
-        console.log(payload, from);
-        // const { forward, backward, leftward, rightward } = JSON.parse(payload);
-        // console.log(forward, backward, leftward, rightward);
-      }
-    },
-  });
-  // huddleClient.localPeer.on("receive-data", ({ payload, from, label }) => {
-  //   if (label === "pos" && from === props.peerId) {
-  //     const { forward, backward, leftward, rightward } = JSON.parse(payload);
-  //     console.log(forward, backward, leftward, rightward);
-  //   }
-  // });
-  // console.log(cursorPosition);
-
   useEffect(() => {
     if (stream && vidRef.current && state === "playable") {
       vidRef.current.srcObject = stream;
@@ -55,6 +32,8 @@ const RemotePeer = (props) => {
       };
     }
   }, [stream, state]);
+
+  console.log(stream, audioStream);
 
   useEffect(() => {
     if (audioStream && audioRef.current) {
@@ -75,14 +54,18 @@ const RemotePeer = (props) => {
   }, [audioStream, state]);
 
   return (
-    <div className="w-[90%] h-[160px] rounded-lg bg-black py-5 my-2">
-      <video
-        ref={vidRef}
-        style={{ width: "100%", height: "100%" }}
-        autoPlay
-        muted
-      ></video>
-      <audio ref={audioRef} autoPlay></audio>
+    <div>
+      {stream && (
+        <div className="w-[200px] h-[125px] rounded-lg bg-black overflow-hidden">
+          <video
+            ref={vidRef}
+            style={{ height: "100%" }}
+            autoPlay
+            muted
+          ></video>
+        </div>
+      )}
+      {audioStream && <audio ref={audioRef} autoPlay></audio>}
     </div>
   );
 };

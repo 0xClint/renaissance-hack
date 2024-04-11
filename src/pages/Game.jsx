@@ -1,14 +1,14 @@
 import { Canvas } from "@react-three/fiber";
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Experience } from "../gameComponents";
+import { Experience } from "../gamecomponents";
+import { usePeerIds, useRoom } from "@huddle01/react/hooks";
 import { KeyboardControls } from "@react-three/drei";
-import { useDataMessage, usePeerIds, useRoom } from "@huddle01/react/hooks";
+import { useParams } from "react-router-dom";
 import { createAccessToken } from "../libs/huddle/createToken";
-import Interface from "../gameComponents/Interface";
 import { bgIcon } from "../assets";
-import Lottie from "react-lottie-player";
-import loaderGif from "../assets/loader.json";
+import { Header } from "../components";
+import LocalPeerData from "../components/LocalPeerData";
+
 
 const Game = () => {
   const { id } = useParams();
@@ -30,14 +30,23 @@ const Game = () => {
     };
     joinGameRoom();
   }, [id]);
+
   return (
     <div style={{ height: "100vh" }}>
-      {/* {!peerIds.length && (
+      <Header />
+      <div
+        className="absolute  cursor-pointer z-10 left-1 icon-container gap-2"
+        style={{ width: "280px", height: "10px" }}
+      >
+        <LocalPeerData />
+      </div>
+      <div className=""></div>
+      {!peerIds.length && (
         <div>
           <img src={bgIcon} className="absolute -z-10  w-[100vw]" />
           <div className=" ">
             <div className="control setting menu absolute h-screen w-screen make-flex">
-              <div className="control z-10 setting menu absolute top-[500px]]">
+              <div className="control z-10 setting menu absolute top-[400px]]">
                 <div
                   className="absolute right-1 justify-end px-2 pt-2 cursor-pointer"
                   // onClick={() => setControlMenu(false)}
@@ -48,17 +57,7 @@ const Game = () => {
                   <h3 className="text-lg font-bold">
                     Waiting for your friend to Join...
                   </h3>
-
-                  <Lottie
-                    loop
-                    animationData={loaderGif}
-                    play
-                    style={{
-                      width: 150,
-                      height: 150,
-                    }}
-                  />
-
+                  <div class="loader my-10"></div>
                   <p
                     onClick={() => {
                       navigator.clipboard.writeText(currentUrl);
@@ -72,9 +71,8 @@ const Game = () => {
             </div>
           </div>
         </div>
-      )} */}
-
-      {/* {peerIds.length && ( */}
+      )}
+      {peerIds.length && (
         <KeyboardControls
           map={[
             { name: "forward", keys: ["ArrowUp", "KeyW"] },
@@ -88,9 +86,8 @@ const Game = () => {
             <axesHelper />
             <Experience />
           </Canvas>
-          {/* <Interface /> */}
         </KeyboardControls>
-      {/* )} */}
+      )}
     </div>
   );
 };

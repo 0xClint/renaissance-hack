@@ -1,16 +1,6 @@
-import {
-  useLocalPeer,
-  useLocalVideo,
-  usePeerIds,
-  useLobby,
-  useRoom,
-} from "@huddle01/react/hooks";
+import { useLocalPeer } from "@huddle01/react/hooks";
 import { useNavigate } from "react-router-dom";
-import React, { useEffect, useRef, useState } from "react";
-import { createAccessToken } from "../libs/huddle/createToken";
-import LocalPeerData from "../components/LocalPeerData";
-import RemotePeer from "../components/RemotePeer";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { Header } from "../components";
 import { bgIcon } from "../assets";
 import useStore from "../hooks/useStore";
