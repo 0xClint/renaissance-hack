@@ -107,7 +107,7 @@ const Home = () => {
                 " -1px -1px 0 #000, 1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000",
             }}
           >
-            Huddle Blitz
+            Blitz Run
           </h2>
 
           <button
