@@ -10,6 +10,8 @@ import {
 import { FaVideo, FaVideoSlash } from "react-icons/fa";
 import { IoMdMic, IoMdMicOff } from "react-icons/io";
 import RemotePeer from "./RemotePeer";
+import { Link } from "react-router-dom";
+import { GoHomeFill } from "react-icons/go";
 
 const LocalPeerData = () => {
   const { peerIds } = usePeerIds();
@@ -44,9 +46,7 @@ const LocalPeerData = () => {
             <video ref={videoRef} style={{ height: "100%" }} autoPlay></video>
           </div>
         ) : (
-          <div className=" h-[45px]">
-      
-          </div>
+          <div className=" h-[45px]"></div>
         )}
         {peerIds.map((peerId) => (
           <RemotePeer key={peerId} peerId={peerId} />
@@ -69,6 +69,9 @@ const LocalPeerData = () => {
         >
           {isAudioOn ? <IoMdMicOff /> : <IoMdMic />}
         </button>
+        <Link to="/" className="btn p-2 text-xl h-10">
+          <GoHomeFill />
+        </Link>
       </div>
     </div>
   );

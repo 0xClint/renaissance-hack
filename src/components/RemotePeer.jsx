@@ -33,8 +33,6 @@ const RemotePeer = (props) => {
     }
   }, [stream, state]);
 
-  console.log(stream, audioStream);
-
   useEffect(() => {
     if (audioStream && audioRef.current) {
       audioRef.current.srcObject = audioStream;

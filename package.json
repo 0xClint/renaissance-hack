@@ -7,7 +7,7 @@
     "@huddle01/server-sdk": "^2.2.2",
     "@react-three/drei": "^9.75.0",
     "@react-three/fiber": "^8.15.12",
-    "@react-three/postprocessing": "^2.6.1",
+    "@react-three/postprocessing": "^2.7.0",
     "@react-three/rapier": "^0.11.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",

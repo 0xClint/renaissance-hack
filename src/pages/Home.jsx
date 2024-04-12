@@ -100,9 +100,16 @@ const Home = () => {
       )}
       <div className="make-flex w-screen h-screen flex-col">
         <div className="w-[600px] mx-auto h-screen flex-col make-flex justify-start pt-32 gap-2">
-          <h2 className="font-bold text-[40px] text-center my-8 make-flex">
+          <h2
+            className="font-bold text-[40px] text-center my-8 make-flex text-white"
+            style={{
+              textShadow:
+                " -1px -1px 0 #000, 1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000",
+            }}
+          >
             Huddle Blitz
           </h2>
+
           <button
             className="btn w-[400px] hover:bg-[#f4f4f4] text-base"
             onClick={() => handleCreate()}

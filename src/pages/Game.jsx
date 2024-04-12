@@ -9,7 +9,6 @@ import { bgIcon } from "../assets";
 import { Header } from "../components";
 import LocalPeerData from "../components/LocalPeerData";
 
-
 const Game = () => {
   const { id } = useParams();
   const { peerIds } = usePeerIds();
@@ -57,14 +56,17 @@ const Game = () => {
                   <h3 className="text-lg font-bold">
                     Waiting for your friend to Join...
                   </h3>
-                  <div class="loader my-10"></div>
+                  <div className="loader my-10"></div>
+                  <div className="font-semibold">
+                    Room id: <span className="text-lg">{id}</span>{" "}
+                  </div>
                   <p
                     onClick={() => {
                       navigator.clipboard.writeText(currentUrl);
                     }}
                     className="text-blue-800 font-semibold underline cursor-pointer"
                   >
-                    click to copy invite link
+                    copy invite link
                   </p>
                 </div>
               </div>

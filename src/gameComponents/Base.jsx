@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { CuboidCollider, RigidBody } from "@react-three/rapier";
 import * as THREE from "three";
 import { Float, Text } from "@react-three/drei";
@@ -256,6 +256,13 @@ const Bounds = ({ length = 1 }) => {
           scale={[4, 1.5, 0.3]}
           receiveShadow
         />
+        <mesh
+          position={[0, 0.75, 2]}
+          geometry={boxGeometry}
+          material={wallMaterial}
+          scale={[4, 1.5, 0.3]}
+          receiveShadow
+        />
         <CuboidCollider
           args={[2, 0.1, 2 * length]}
           position={[0, -0.1, -(length * 2) + 2]}
@@ -267,21 +274,24 @@ const Bounds = ({ length = 1 }) => {
   );
 };
 
-const Base = ({ count = 5, types = [BlockSpinner, BlockAxe, BlockLimbo] }) => {
-  const blocks = useMemo(() => {
-    const blocks = [];
+const Base = ({ count = 5 }) => {
+  const blockData = [
+    BlockSpinner,
+    BlockAxe,
+    BlockLimbo,
+    BlockSpinner,
+    BlockAxe,
+    BlockLimbo,
+    BlockAxe,
+    BlockSpinner,
+    BlockLimbo,
+    BlockAxe,
+  ];
 
-    for (let i = 0; i < count; i++) {
-      const type = types[Math.floor(Math.random() * types.length)];
-      blocks.push(type);
-    }
-
-    return blocks;
-  }, [count, types]);
   return (
     <>
       <BlockStart position={new THREE.Vector3(0, 0, 0)} />
-      {blocks.map((Block, index) => (
+      {blockData.map((Block, index) => (
         <Block
           key={index}
           position={new THREE.Vector3(0, 0, -(index + 1) * 4)}

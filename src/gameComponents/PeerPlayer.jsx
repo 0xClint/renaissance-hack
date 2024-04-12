@@ -6,7 +6,7 @@ import * as THREE from "three";
 import useStore from "../hooks/useStore";
 import { useDataMessage, useLocalPeer } from "@huddle01/react/hooks";
 
-const PeerPlayer = ({ remotePeerId }) => {
+const PeerPlayer = ({ remotePeerId, position }) => {
   const { peerId } = useLocalPeer();
   const [peerForward, setForward] = useState(false);
   const [peerBackward, setBackward] = useState(false);
@@ -146,9 +146,19 @@ const PeerPlayer = ({ remotePeerId }) => {
     /**
      * Phases
      */
-    if (bodyPosition.z < -(blocksCount * 4 + 2)) end();
+    if (bodyPosition.z < -(blocksCount * 4 + 2)) {
+      console.log("end");
+      end();
+    }
 
-    if (bodyPosition.y < -4) restart();
+    if (bodyPosition.y < -4) {
+      console.log("start");
+      restart();
+    }
+    if (bodyPosition.z == -2) {
+      console.log("start");
+      restart();
+    }
   });
 
   return (
@@ -159,7 +169,7 @@ const PeerPlayer = ({ remotePeerId }) => {
       friction={1}
       linearDamping={0.5}
       angularDamping={0.5}
-      position={[0, 1, 0]}
+      position={position}
     >
       <mesh castShadow>
         <icosahedronGeometry args={[0.3, 1]} />
