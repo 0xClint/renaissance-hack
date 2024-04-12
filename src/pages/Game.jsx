@@ -1,6 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import React, { useEffect } from "react";
-import { Experience } from "../gamecomponents";
+import { Experience } from "../game-Components";
 import { usePeerIds, useRoom } from "@huddle01/react/hooks";
 import { KeyboardControls } from "@react-three/drei";
 import { useParams } from "react-router-dom";
