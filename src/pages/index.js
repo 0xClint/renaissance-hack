@@ -1,3 +1,5 @@
 import Game from "./Game";
 import Home from "./Home";
-export { Game, Home };
+import Test from "./Test";
+
+export { Game, Home, Test };
